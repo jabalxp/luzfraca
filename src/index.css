@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Special+Elite&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-title: "IM Fell English SC", serif;
+  --font-paper: "Special Elite", monospace;
+  --font-ui: "Crimson Pro", serif;
+  --color-bone: #d8d2c4;
+  --color-bone-dim: #8a8478;
+  --color-blood: #7a1818;
+  --color-blood-bright: #b32626;
+  --color-amber-weak: #c9a86a;
+  --color-void: #050505;
+  --color-coal: #0c0b09;
+  --color-ash: #1a1814;
+  --animate-flicker: flicker 4s infinite;
+  --animate-tremble: tremble 0.4s infinite;
+  --animate-slowpulse: slowpulse 3s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  3% { opacity: 0.6; }
+  6% { opacity: 1; }
+  52% { opacity: 1; }
+  54% { opacity: 0.7; }
+  56% { opacity: 1; }
+  80% { opacity: 0.92; }
+}
+
+@keyframes tremble {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(0.7px, -0.5px); }
+  50% { transform: translate(-0.6px, 0.4px); }
+  75% { transform: translate(0.4px, 0.6px); }
+}
+
+@keyframes slowpulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes hudmsg {
+  0% { opacity: 0; letter-spacing: 0.5em; }
+  15% { opacity: 1; letter-spacing: 0.3em; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: #050505;
+  color: #d8d2c4;
+  font-family: "Crimson Pro", serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* granulado de filme via CSS para os menus (no jogo é pós-processamento) */
+.menu-grain::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  animation: grainshift 0.7s steps(4) infinite;
+}
+
+@keyframes grainshift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, 1%); }
+  50% { transform: translate(1%, -2%); }
+  75% { transform: translate(-1%, 2%); }
+  100% { transform: translate(2%, -1%); }
+}
+
+.vignette-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,0.55) 78%, rgba(0,0,0,0.92) 100%);
+}
+
+.hud-message {
+  animation: hudmsg 3.5s ease-out forwards;
+}
+
+.paper-bg {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(120, 90, 40, 0.22), transparent 50%),
+    radial-gradient(ellipse at 85% 80%, rgba(90, 50, 30, 0.3), transparent 45%),
+    radial-gradient(ellipse at 60% 40%, rgba(60, 40, 20, 0.12), transparent 60%),
+    #d3c8a8;
+}
+
+input[type="range"] {
+  accent-color: #7a1818;
+}

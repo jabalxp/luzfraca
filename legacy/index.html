@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUZ FRACA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ TELA INICIAL (aviso de fones) ============ -->
+  <div id="screen-intro" class="screen active">
+    <div class="intro-box">
+      <p class="intro-warn">Jogue com fones.</p>
+      <p class="intro-sub">Eles ouvem você. É justo que você os ouça também.</p>
+      <button id="btn-intro-start" class="btn-main">ACENDER A LANTERNA</button>
+    </div>
+  </div>
+
+  <!-- ============ MENU PRINCIPAL ============ -->
+  <div id="screen-menu" class="screen">
+    <canvas id="menu-canvas"></canvas>
+    <div class="menu-overlay">
+      <h1 id="menu-title">LUZ FRACA</h1>
+      <div class="menu-buttons">
+        <button class="btn-menu" data-go="play">JOGAR</button>
+        <button class="btn-menu" data-go="lore">LORE</button>
+        <button class="btn-menu" data-go="settings">CONFIGURAÇÕES</button>
+        <button class="btn-menu" data-go="shop">LOJA</button>
+      </div>
+      <div id="menu-counters">
+        <span id="menu-coins">🪙 0</span>
+        <span id="menu-papers">📜 0/10</span>
+      </div>
+      <div id="menu-nightmare" class="hidden">☠ MODO PESADELO DISPONÍVEL</div>
+    </div>
+  </div>
+
+  <!-- ============ SELEÇÃO DE FASES ============ -->
+  <div id="screen-play" class="screen">
+    <h2 class="screen-title">ESCOLHA SEU PESADELO</h2>
+    <div id="phase-grid"></div>
+    <div id="achievements-bar"></div>
+    <button class="btn-back" data-go="menu">← VOLTAR</button>
+  </div>
+
+  <!-- ============ TELA DE PREPARAÇÃO ============ -->
+  <div id="screen-prep" class="screen">
+    <div id="prep-box">
+      <h2 id="prep-title"></h2>
+      <p id="prep-desc"></p>
+      <p id="prep-warning" class="prep-warning"></p>
+      <div id="prep-consumables"></div>
+      <label id="prep-nightmare-row" class="hidden">
+        <input type="checkbox" id="prep-nightmare"> ☠ Modo Pesadelo (+1 monstro visitante)
+      </label>
+      <div class="prep-actions">
+        <button id="btn-prep-shop" class="btn-sec">LOJA (última chance)</button>
+        <button id="btn-prep-enter" class="btn-main btn-tremble">ENTRAR</button>
+      </div>
+      <button class="btn-back" data-go="play">← VOLTAR</button>
+    </div>
+  </div>
+
+  <!-- ============ LORE ============ -->
+  <div id="screen-lore" class="screen">
+    <h2 class="screen-title">OS PAPÉIS</h2>
+    <div id="lore-table">
+      <div id="lore-grid"></div>
+      <div id="lore-secret" class="hidden"></div>
+    </div>
+    <button class="btn-back" data-go="menu">← VOLTAR</button>
+  </div>
+
+  <!-- modal de leitura de papel -->
+  <div id="lore-modal" class="modal hidden">
+    <div id="lore-paper">
+      <button id="lore-close">✕</button>
+      <h3 id="lore-paper-title"></h3>
+      <div id="lore-paper-text"></div>
+    </div>
+  </div>
+
+  <!-- ============ CONFIGURAÇÕES ============ -->
+  <div id="screen-settings" class="screen">
+    <h2 class="screen-title">CONFIGURAÇÕES</h2>
+    <div id="settings-list">
+      <label>Volume Geral <input type="range" id="set-volMaster" min="0" max="100"><span></span></label>
+      <label>Volume da Música <input type="range" id="set-volMusic" min="0" max="100"><span></span></label>
+      <label>Volume dos Efeitos <input type="range" id="set-volFx" min="0" max="100"><span></span></label>
+      <label>Volume dos Sustos <input type="range" id="set-volScare" min="0" max="100"><span></span></label>
+      <label>Brilho <input type="range" id="set-brightness" min="50" max="150"><span></span></label>
+      <label>Sensibilidade do mouse <input type="range" id="set-sensitivity" min="20" max="200"><span></span></label>
+      <label class="chk">Inverter eixo Y <input type="checkbox" id="set-invertY"></label>
+      <label class="chk">Modo Daltonismo (formas distintas) <input type="checkbox" id="set-colorblind"></label>
+      <label class="chk">Legendas de som <input type="checkbox" id="set-captions"></label>
+      <p class="settings-hint">Ajuste o brilho até o símbolo da esquerda ficar quase invisível:</p>
+      <div id="brightness-calib"><span class="calib-a">◆</span><span class="calib-b">◆</span><span class="calib-c">◆</span></div>
+      <button id="btn-reset-save" class="btn-danger">APAGAR SAVE</button>
+    </div>
+    <button class="btn-back" data-go="menu">← VOLTAR</button>
+  </div>
+
+  <!-- ============ LOJA ============ -->
+  <div id="screen-shop" class="screen">
+    <div id="shop-header">
+      <h2 class="screen-title">A LOJA</h2>
+      <span id="shop-coins">🪙 0</span>
+    </div>
+    <p id="vendor-line">"..."</p>
+    <div id="shop-tabs">
+      <button id="tab-perm" class="shop-tab active">PERMANENTES</button>
+      <button id="tab-cons" class="shop-tab">CONSUMÍVEIS</button>
+    </div>
+    <div id="shop-items"></div>
+    <button class="btn-back" id="btn-shop-back">← VOLTAR</button>
+  </div>
+
+  <!-- ============ JOGO ============ -->
+  <div id="screen-game" class="screen">
+    <canvas id="game-canvas" width="960" height="540"></canvas>
+    <canvas id="overlay-canvas" width="960" height="540"></canvas>
+    <div id="hud">
+      <div id="hud-coins" class="hidden"></div>
+      <div id="hud-petals" class="hidden"></div>
+      <div id="hud-slots"></div>
+      <div id="hud-captions"></div>
+      <div id="hud-prompt" class="hidden"></div>
+      <div id="hud-message" class="hidden"></div>
+      <canvas id="minimap" width="150" height="150" class="hidden"></canvas>
+    </div>
+    <div id="pause-menu" class="hidden">
+      <h2>PAUSA</h2>
+      <button id="btn-resume" class="btn-main">CONTINUAR</button>
+      <button id="btn-giveup" class="btn-sec">DESISTIR (perde as moedas da run)</button>
+    </div>
+    <div id="death-screen" class="hidden">
+      <div id="death-flash"></div>
+      <p id="death-message"></p>
+      <p id="death-stats"></p>
+      <button id="btn-death-ok" class="btn-main">VOLTAR AO MENU</button>
+    </div>
+    <div id="win-screen" class="hidden">
+      <h2 id="win-title">VOCÊ SOBREVIVEU</h2>
+      <p id="win-stats"></p>
+      <p id="win-achievement"></p>
+      <button id="btn-win-ok" class="btn-main">VOLTAR AO MENU</button>
+    </div>
+    <div id="final-screen" class="hidden">
+      <div id="final-text"></div>
+      <button id="btn-final-ok" class="btn-main hidden">DEIXAR O MUNDO DORMIR</button>
+    </div>
+  </div>
+
+  <!-- efeitos globais -->
+  <div id="fx-vignette"></div>
+  <div id="fx-grain"></div>
+  <div id="fx-vhs" class="hidden"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/save.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/map.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/render.js"></script>
+<script src="js/player.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
